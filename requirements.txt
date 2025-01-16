@@ -2,3 +2,4 @@ flask
 vosk
 requests
 openai
+flask_cors

@@ -5,7 +5,7 @@ from vosk import Model, KaldiRecognizer
 import json
 
 # 定义模型路径
-MODEL_PATH = "../models/vosk-model-small-cn-0.22"
+MODEL_PATH = "models/vosk-model-small-cn-0.22"
 
 # 检查模型是否存在
 if not os.path.exists(MODEL_PATH):
@@ -52,22 +52,24 @@ def transcribe_audio(file_path):
             if len(data) == 0:
                 break
             if recognizer.AcceptWaveform(data):
-                partial_result = json.loads(recognizer.Result())['text']
-                input(result)
+                partial_result = recognizer.Result()
+                # input(result)
                 result.append(partial_result)
 
         # 获取最终结果
         final_result = recognizer.FinalResult()
         result.append(final_result)
+        result = [json.loads(r)['text'] for r in result]
 
     # 删除临时文件
     os.remove(wav_file)
 
     # 返回转录结果
-    return "\n".join([r for r in result if r.strip()])
+    return " ".join(result)
 
 if __name__ == "__main__":
     # 测试音频转录
+    MODEL_PATH = "..models/vosk-model-small-cn-0.22"
     audio_file = "../data/uploads/mysql.mp4"
     text = transcribe_audio(audio_file)
     with open ("../data/outputs/mysql.txt", "w") as f:
